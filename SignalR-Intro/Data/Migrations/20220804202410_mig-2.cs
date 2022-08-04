@@ -6,12 +6,8 @@ namespace SignalR_Intro.Data.Migrations
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropColumn(
-                name: "SurName",
-                table: "AspNetUsers");
-
             migrationBuilder.AddColumn<string>(
-                name: "LastName",
+                name: "ConnectionId",
                 table: "AspNetUsers",
                 nullable: true);
         }
@@ -19,14 +15,8 @@ namespace SignalR_Intro.Data.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropColumn(
-                name: "LastName",
+                name: "ConnectionId",
                 table: "AspNetUsers");
-
-            migrationBuilder.AddColumn<string>(
-                name: "SurName",
-                table: "AspNetUsers",
-                type: "nvarchar(max)",
-                nullable: true);
         }
     }
 }

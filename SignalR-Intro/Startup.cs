@@ -5,6 +5,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using SignalR_Intro.Extentions;
+using SignalR_Intro.SignalR;
 
 namespace SignalR_Intro
 {
@@ -40,6 +41,7 @@ namespace SignalR_Intro
             app.UseStaticFiles();
 
             app.UseRouting();
+            app.UseAuthentication();
 
             app.UseAuthorization();
 
@@ -47,7 +49,8 @@ namespace SignalR_Intro
             {
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "{controller=Home}/{action=Index}/{id?}");
+                    pattern: "{controller=Home}/{action=chat}/{id?}");
+                endpoints.MapHub<MessageHub>("/chat");
             });
         }
     }

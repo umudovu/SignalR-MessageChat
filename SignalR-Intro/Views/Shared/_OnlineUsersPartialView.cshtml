@@ -1,0 +1,16 @@
+﻿@model List<AppUser>
+
+
+
+				@foreach (var item in Model)
+			   {
+				   <li class="contact">
+					<div class="wrap">
+						<img src="http://emilcarlsson.se/assets/louislitt.png" alt="" />
+						<div class="meta">
+							<p class="name">@item.FirstName @item.LastName</p>
+							<p class="preview">@item.UserName</p>
+						</div>
+					</div>
+				</li>
+			   }

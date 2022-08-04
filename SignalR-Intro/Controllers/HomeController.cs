@@ -1,52 +1,48 @@
-﻿using Bogus;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using SignalR_Intro.Data;
 using SignalR_Intro.Models;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
-using static SignalR_Intro.Helpers.Helper;
 
 namespace SignalR_Intro.Controllers
 {
+    [Authorize]
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
         private readonly UserManager<AppUser> _userManager;
-        public HomeController(ILogger<HomeController> logger, UserManager<AppUser> userManager)
+        private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly AppDataContext _context;
+
+        public HomeController(UserManager<AppUser> userManager, RoleManager<IdentityRole> roleManager, AppDataContext context)
         {
-            _logger = logger;
             _userManager = userManager;
+            _roleManager = roleManager;
+            _context = context;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> ChatAsync()
         {
-            return View();
+            if (!User.Identity.IsAuthenticated) return RedirectToAction("login","account");
+
+            var users = _context.Users.Where(x=>x.ConnectionId!=null).ToList();
+
+            AppUser user = await _userManager.FindByNameAsync(User.Identity.Name);
+            ViewBag.CurrentUser = user.FirstName + " " + user.LastName;
+
+            return View(users);
         }
 
-        public async Task<ActionResult> CreateUserFake()
-        {
-
-            List<AppUser> _users = new Faker<AppUser>()
-                        .RuleFor(x => x.FirstName, f => f.Name.FirstName())
-                        .RuleFor(x => x.LastName, f => f.Name.LastName())
-                        .RuleFor(x => x.Email, f => f.Person.Email)
-                        .Generate(100);
-
-
-            foreach (var item in _users)
-            {
-                await _userManager.CreateAsync(item, "Pa$$word123");
-                await _userManager.AddToRoleAsync(item, UserRoles.Member.ToString());
-            }
 
 
 
-            return RedirectToAction("Index", "Home");
-        }
+       
+       
 
     }
 }
